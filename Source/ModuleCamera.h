@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 
+class ModuleD3D12;
+
 class ModuleCamera : public Module
 {
 public:
@@ -20,7 +22,11 @@ public:
 	Matrix* GetProjectionMatrix() { return &proj; }
 
 private:
+	ModuleD3D12* d3d12 = nullptr;
+
 	float scrollWheel = 0.0f;
+	float dragPosX = 0.0f;
+	float dragPosY = 0.0f;
 
 	Matrix view;
 	Matrix proj;

@@ -21,17 +21,22 @@ bool Exercise3Camera::init()
 	// Create Debug Draw Pass
 	if (ok)
 	{
-		ModuleD3D12* d3d12 = app->getD3D12();
+		d3d12 = app->getD3D12();
 		debugDrawPass = std::make_unique<DebugDrawPass>(d3d12->getDevice(), d3d12->getCommandQueue());
+		imguiPass = std::make_unique<ImGuiPass>(app->getD3D12()->getDevice(), app->getD3D12()->getHWnd());
+		fpsHistory.resize(maxFPSHistory, 0.0f);
 	}
-
 
 	return true;
 }
 
+void Exercise3Camera::preRender()
+{
+	imguiPass->startFrame();
+}
+
 void Exercise3Camera::render()
 {
-	ModuleD3D12* d3d12 = app->getD3D12();
 	ID3D12GraphicsCommandList* commandList = d3d12->getCommandList();
 	commandList->Reset(d3d12->getCommandAllocator(), pso.Get());
 
@@ -78,10 +83,12 @@ void Exercise3Camera::render()
 	commandList->DrawInstanced(3, 1, 0, 0);
 
 	// Draw debug primitives
-	dd::xzSquareGrid(-10.0f, 10.0f, 0.0f, 1.0f, dd::colors::LightGray);  // Grid plane
-	dd::axisTriad(ddConvert(Matrix::Identity), 0.1f, 1.0f);  // XYZ axis
+	if (showGrid) dd::xzSquareGrid(-10.0f, 10.0f, 0.0f, 1.0f, dd::colors::LightGray);  // Grid plane
+	if (showAxis) dd::axisTriad(ddConvert(Matrix::Identity), 0.1f, 1.0f);  // XYZ axis
 
 	debugDrawPass->record(commandList, windowWidth, windowHeight, view, proj);
+	imGuiCommands();
+	imguiPass->record(d3d12->getCommandList());
 
 	// Transition back buffer from RENDER_TARGET to PRESENT
 	barrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -94,6 +101,74 @@ void Exercise3Camera::render()
 	commandList->Close();
 	ID3D12CommandList* listsToExecute[] = { commandList };
 	d3d12->getCommandQueue()->ExecuteCommandLists(UINT(std::size(listsToExecute)), listsToExecute);
+}
+
+void Exercise3Camera::imGuiCommands()
+{
+	ImGui::ShowDemoWindow();
+	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("About"))
+	{
+		ImGui::Text("Engine Name: Dream Engine");
+		ImGui::Text("Description: Educational Engine for the Master Degree");
+		ImGui::Text("Name Author: Kevin Qiu");
+		ImGui::Text("Libraries: DirectX 12, ImGui...");
+		ImGui::Text("License: MIT License");
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Settings"))
+	{
+		// Grid and axis toggles
+		ImGui::Checkbox("Show Grid", &showGrid);
+		ImGui::Checkbox("Show Axis", &showAxis);
+		ImGui::EndMenu();
+	}
+	if(ImGui::BeginMenu("Camera Instructions"))
+	{
+		ImGui::Text("Right drag to rotate camera");
+		ImGui::Text("WASDEQ with right click pressed to move camera");
+		ImGui::Text("Wheel to zoom in/out");
+		ImGui::Text("Wheel click and drag to pan camera");
+		ImGui::Text("Alt + left click and drag to orbit around target");
+		ImGui::Text("F to focus on current focus point and reset zoom");
+		ImGui::Text("Shift + F to refocus to origin and reset zoom");
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("FPS"))
+	{
+		ImGui::SliderInt("Max FPS History", &maxFPSHistory, 10, 120);
+
+		// Handle MaxFPSHistory resize
+		static int lastMaxFPSHistory = maxFPSHistory;
+		if (lastMaxFPSHistory != maxFPSHistory)
+		{
+			fpsHistory.clear();
+			fpsHistory.resize(maxFPSHistory, 0.0f);
+			fpsOffset = 0;
+			lastMaxFPSHistory = maxFPSHistory;
+		}
+
+		// Update FPS history
+		float currentFPS = app->getFPS();
+		fpsHistory[fpsOffset] = currentFPS;
+		fpsOffset = (fpsOffset + 1) % maxFPSHistory;
+
+		// Histogram
+		ImGui::Text("Framerate %.2f FPS", currentFPS);
+		int count = (int)fpsHistory.size();
+		ImGui::PlotHistogram(
+			"##framerate",
+			fpsHistory.data(),
+			count,
+			fpsOffset,
+			nullptr,
+			0.0f,    // min
+			144.0f,  // max
+			ImVec2(0, 80)
+		);
+		ImGui::EndMenu();
+	}
+	ImGui::EndMainMenuBar();
 }
 
 bool Exercise3Camera::createVertexBuffer()

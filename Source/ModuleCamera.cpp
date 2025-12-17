@@ -35,11 +35,14 @@ bool ModuleCamera::init()
 	camRot = Quaternion::CreateFromAxisAngle(Vector3::Right, camPitch) * Quaternion::CreateFromAxisAngle(Vector3::Up, camYaw);
 	focusOnPosition(focusPos); // focusPoint set to origin by default
 
+	d3d12 = app->getD3D12();
+
 	return true;
 }
 
 void ModuleCamera::update()
 {
+
 	Mouse& mouse = Mouse::Get();
 	const Mouse::State& mouseState = mouse.GetState();
 	Keyboard& keyboard = Keyboard::Get();
@@ -47,66 +50,46 @@ void ModuleCamera::update()
 
 	float elapsedSec = app->getElapsedMilis() * 0.001f;
 
-	// Handle Mouse mode and visibility
-	bool isClicking = false;
-	if (mouseState.rightButton || mouseState.leftButton || mouseState.middleButton)
-	{
-		mouse.SetMode(Mouse::MODE_RELATIVE);
-		mouse.SetVisible(false);
-		// Check relative values to avoid large jumps when passing from absolute to relative mode
-		if (std::abs(mouseState.x) < 300 && std::abs(mouseState.y) < 300)
-			isClicking = true;
-	}
-	else
-	{
-		mouse.SetMode(Mouse::MODE_ABSOLUTE);
-		mouse.SetVisible(true);
-		translationSpeedMultiplier = 1.0f;
-	}
-
 	// Handle input
 	Vector3 translate = Vector3::Zero; // WASDQE + right button / scroll / middle button drag
 	Vector2 rotate = Vector2::Zero; // right button drag
 	Vector2 orbit = Vector2::Zero; // Alt + left button drag
 
 	// Handle mouse Input
-	if (isClicking)
+	if (mouseState.rightButton && !keyState.LeftAlt)
 	{
-		if (mouseState.rightButton && !keyState.LeftAlt)
-		{
-			// Rotate camera (1st person)
-			rotate.x = float(-mouseState.x) * MOUSE_ROT_SENSITIVITY;
-			rotate.y = float(-mouseState.y) * MOUSE_ROT_SENSITIVITY;
+		// Rotate camera (1st person)
+		rotate.x = float(dragPosX-mouseState.x) * MOUSE_ROT_SENSITIVITY;
+		rotate.y = float(dragPosY-mouseState.y) * MOUSE_ROT_SENSITIVITY;
 
-			// Translate camera
-			if (keyState.W) translate.z -= 0.45f * elapsedSec;
-			if (keyState.S) translate.z += 0.45f * elapsedSec;
-			if (keyState.A) translate.x -= 0.45f * elapsedSec;
-			if (keyState.D) translate.x += 0.45f * elapsedSec;
-			if (keyState.Q) translate.y -= 0.45f * elapsedSec;
-			if (keyState.E) translate.y += 0.45f * elapsedSec;
-			if (translate.LengthSquared() > 0.0f && keyState.LeftShift) translationSpeedMultiplier += 0.45f * elapsedSec;
-			else translationSpeedMultiplier = 1.0f;
-		}
-		else if (mouseState.middleButton)
-		{
-			// Pan camera
-			translate.x = float(-mouseState.x) * MOUSE_PAN_SENSITIVITY;
-			translate.y = float(mouseState.y) * MOUSE_PAN_SENSITIVITY;
-		}
-		else if (mouseState.leftButton && keyState.LeftAlt)
-		{
-			// Orbit camera (around focus point)
-			orbit.x = float(-mouseState.x) * MOUSE_ROT_SENSITIVITY;
-			orbit.y = float(-mouseState.y) * MOUSE_ROT_SENSITIVITY;
-		}
-		else if (mouseState.rightButton && keyState.LeftAlt)
-		{
-			// Zoom camera (changing orbit distance)
-			orbitDistance += float(-mouseState.x) * MOUSE_DRAG_ZOOM_SENSITIVITY;
-			orbitDistance += float(-mouseState.y) * MOUSE_DRAG_ZOOM_SENSITIVITY;
-			camPos = focusPos - Vector3::Transform(Vector3::Forward * orbitDistance, camRot);
-		}
+		// Translate camera
+		if (keyState.W) translate.z -= 0.45f * elapsedSec;
+		if (keyState.S) translate.z += 0.45f * elapsedSec;
+		if (keyState.A) translate.x -= 0.45f * elapsedSec;
+		if (keyState.D) translate.x += 0.45f * elapsedSec;
+		if (keyState.Q) translate.y -= 0.45f * elapsedSec;
+		if (keyState.E) translate.y += 0.45f * elapsedSec;
+		if (translate.LengthSquared() > 0.0f && keyState.LeftShift) translationSpeedMultiplier += 0.45f * elapsedSec;
+		else translationSpeedMultiplier = 1.0f;
+	}
+	else if (mouseState.middleButton)
+	{
+		// Pan camera
+		translate.x = float(dragPosX -mouseState.x) * MOUSE_PAN_SENSITIVITY;
+		translate.y = -float(dragPosY-mouseState.y) * MOUSE_PAN_SENSITIVITY;
+	}
+	else if (mouseState.leftButton && keyState.LeftAlt)
+	{
+		// Orbit camera (around focus point)
+		orbit.x = float(dragPosX -mouseState.x) * MOUSE_ROT_SENSITIVITY;
+		orbit.y = float(dragPosY -mouseState.y) * MOUSE_ROT_SENSITIVITY;
+	}
+	else if (mouseState.rightButton && keyState.LeftAlt)
+	{
+		// Zoom camera (changing orbit distance)
+		orbitDistance += float(dragPosX -mouseState.x) * MOUSE_DRAG_ZOOM_SENSITIVITY;
+		orbitDistance += float(dragPosY -mouseState.y) * MOUSE_DRAG_ZOOM_SENSITIVITY;
+		camPos = focusPos - Vector3::Transform(Vector3::Forward * orbitDistance, camRot);
 	}
 
 	// Handle mouse wheel zoom (changing orbit distance)
@@ -170,12 +153,14 @@ void ModuleCamera::update()
 	view.Translation(Vector3::Transform(-camPos, invRot));
 
 	// Set projection matrix
-	LONG windowWidth = (LONG)app->getD3D12()->getWindowWidth();
-	LONG windowHeight = (LONG)app->getD3D12()->getWindowHeight();
+	LONG windowWidth = (LONG)d3d12->getWindowWidth();
+	LONG windowHeight = (LONG)d3d12->getWindowHeight();
 	float aspect = float(windowWidth) / float(windowHeight);
 	proj = Matrix::CreatePerspectiveFieldOfView(fov, aspect, nearPlane, farPlane);
 
 	scrollWheel = mouseState.scrollWheelValue;
+	dragPosX = mouseState.x;
+	dragPosY = mouseState.y;
 }
 
 void ModuleCamera::CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up)

@@ -8,6 +8,7 @@ public:
 	ModuleD3D12(HWND hWnd);
 	~ModuleD3D12();
 
+	HWND							getHWnd() const { return m_hWnd; }
 	ID3D12Device5*					getDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList4*		getCommandList() const { return commandList.Get(); }
 	ID3D12Resource*					getCurrentBackBuffer() const { return renderTargets[currentIndex].Get(); }

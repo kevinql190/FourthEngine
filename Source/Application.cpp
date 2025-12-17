@@ -1,9 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
-#include "Exercises/Exercise1.h"
-#include "Exercises/Exercise2.h"
-#include "Exercises/Exercise3.h"
+//#include "Exercises/Exercise1.h"
+//#include "Exercises/Exercise2.h"
+//#include "Exercises/Exercise3.h"
 #include "Exercises/Exercise3Camera.h"
 
 
