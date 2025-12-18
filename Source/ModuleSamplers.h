@@ -1,0 +1,31 @@
+#pragma once
+#include "Module.h"
+
+class ModuleSamplers : public Module
+{
+public:
+	ModuleSamplers();
+	~ModuleSamplers();
+	bool init() override;
+
+    enum Type
+    {
+        LINEAR_WRAP,
+        POINT_WRAP,
+        LINEAR_CLAMP,
+        POINT_CLAMP,
+    };
+
+    D3D12_CPU_DESCRIPTOR_HANDLE getCPUHandle(Type type) const { return CD3DX12_CPU_DESCRIPTOR_HANDLE(cpuStart, type, descriptorSize); }
+    D3D12_GPU_DESCRIPTOR_HANDLE getGPUHandle(Type type) const { return CD3DX12_GPU_DESCRIPTOR_HANDLE(gpuStart, type, descriptorSize); }
+
+    ID3D12DescriptorHeap* getHeap() const { return heap.Get(); }
+
+private:
+    ComPtr<ID3D12DescriptorHeap> heap;
+    D3D12_CPU_DESCRIPTOR_HANDLE cpuStart = { 0 };
+    D3D12_GPU_DESCRIPTOR_HANDLE gpuStart = { 0 };
+    UINT descriptorSize = 0;
+
+};
+

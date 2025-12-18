@@ -4,19 +4,22 @@
 //#include "Exercises/Exercise1.h"
 //#include "Exercises/Exercise2.h"
 //#include "Exercises/Exercise3.h"
-#include "Exercises/Exercise3Camera.h"
+//#include "Exercises/Exercise3Camera.h"
+#include "Exercises/Exercise4.h"
 
 
 Application::Application(int argc, wchar_t** argv, void* hWnd)
 {
     modules.push_back(new ModuleInput((HWND)hWnd));
 	modules.push_back(d3d12 = new ModuleD3D12((HWND)hWnd));
+    modules.push_back(camera = new ModuleCamera());
 	modules.push_back(resources = new ModuleResources());
-	modules.push_back(camera = new ModuleCamera());
+    modules.push_back(samplers = new ModuleSamplers());
     //modules.push_back(new Exercise1());
     //modules.push_back(new Exercise2());
     //modules.push_back(new Exercise3());
-    modules.push_back(new Exercise3Camera());
+    //modules.push_back(new Exercise3Camera());
+	modules.push_back(new Exercise4());
 }
 
 Application::~Application()

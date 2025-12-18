@@ -4,6 +4,7 @@
 #include "ModuleD3D12.h"
 #include "ModuleResources.h"
 #include "ModuleCamera.h"
+#include "ModuleSamplers.h"
 
 #include <array>
 #include <vector>
@@ -29,6 +30,7 @@ public:
     ModuleD3D12*        getD3D12() const { return d3d12; }
     ModuleResources*    getResources() const { return resources; }
 	ModuleCamera*       getCamera() const { return camera; }
+	ModuleSamplers*     getSamplers() const { return samplers; }
     
     float                       getFPS() const { return 1000.0f * float(MAX_FPS_TICKS) / tickSum; }
     float                       getAvgElapsedMs() const { return tickSum / float(MAX_FPS_TICKS); }
@@ -46,6 +48,7 @@ private:
     ModuleD3D12* d3d12 = nullptr;
     ModuleResources* resources = nullptr;
 	ModuleCamera* camera = nullptr;
+	ModuleSamplers* samplers = nullptr;
 
     uint64_t  lastMilis = 0;
     TickList  tickList;
