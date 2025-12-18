@@ -11,15 +11,15 @@ public:
 	bool init() override;
 	void update() override;
 
-	void CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up);
+	void createLookAt(const Vector3& position, const Vector3& target, const Vector3& up);
 
-	void SetFOV(float fov);
-	void SetPlaneDistances(float nearPlane, float farPlane);
+	void setFOV(float fov);
+	void setPlaneDistances(float nearPlane, float farPlane);
 
 	void focusOnPosition(const Vector3& position);
 
-	Matrix* GetViewMatrix() { return &view; }
-	Matrix* GetProjectionMatrix() { return &proj; }
+	const Matrix* GetViewMatrix() const { return &view; }
+	const Matrix* GetProjectionMatrix() const { return &proj; }
 
 private:
 	ModuleD3D12* d3d12 = nullptr;

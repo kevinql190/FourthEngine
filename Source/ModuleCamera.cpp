@@ -47,8 +47,8 @@ void ModuleCamera::update()
 	const Mouse::State& mouseState = mouse.GetState();
 	Keyboard& keyboard = Keyboard::Get();
 	const Keyboard::State& keyState = keyboard.GetState();
-
-	float elapsedSec = app->getElapsedMilis() * 0.001f;
+	
+	const float elapsedSec = app->getElapsedMilis() * 0.001f;
 
 	// Handle input
 	Vector3 translate = Vector3::Zero; // WASDQE + right button / scroll / middle button drag
@@ -153,9 +153,9 @@ void ModuleCamera::update()
 	view.Translation(Vector3::Transform(-camPos, invRot));
 
 	// Set projection matrix
-	LONG windowWidth = (LONG)d3d12->getWindowWidth();
-	LONG windowHeight = (LONG)d3d12->getWindowHeight();
-	float aspect = float(windowWidth) / float(windowHeight);
+	const LONG windowWidth = (LONG)d3d12->getWindowWidth();
+	const LONG windowHeight = (LONG)d3d12->getWindowHeight();
+	const float aspect = float(windowWidth) / float(windowHeight);
 	proj = Matrix::CreatePerspectiveFieldOfView(fov, aspect, nearPlane, farPlane);
 
 	scrollWheel = mouseState.scrollWheelValue;
@@ -163,7 +163,7 @@ void ModuleCamera::update()
 	dragPosY = mouseState.y;
 }
 
-void ModuleCamera::CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up)
+void ModuleCamera::createLookAt(const Vector3& position, const Vector3& target, const Vector3& up)
 {
 	camPos = position;
 	view = Matrix::CreateLookAt(position, target, up);
@@ -172,12 +172,12 @@ void ModuleCamera::CreateLookAt(const Vector3& position, const Vector3& target, 
 	camPitch = asinf(view._12);
 }
 
-void ModuleCamera::SetFOV(float fovAngle)
+void ModuleCamera::setFOV(float fovAngle)
 {
 	fov = fovAngle;
 }
 
-void ModuleCamera::SetPlaneDistances(float nearP, float farP)
+void ModuleCamera::setPlaneDistances(float nearP, float farP)
 {
 	nearPlane = nearP;
 	farPlane = farP;

@@ -18,7 +18,6 @@ bool Exercise3Camera::init()
 	ok = ok && createRootSignature();
 	ok = ok && createPipelineStateObject();
 
-	// Create Debug Draw Pass
 	if (ok)
 	{
 		d3d12 = app->getD3D12();
@@ -118,7 +117,6 @@ void Exercise3Camera::imGuiCommands()
 	}
 	if (ImGui::BeginMenu("Settings"))
 	{
-		// Grid and axis toggles
 		ImGui::Checkbox("Show Grid", &showGrid);
 		ImGui::Checkbox("Show Axis", &showAxis);
 		ImGui::EndMenu();

@@ -26,9 +26,9 @@ public:
 	bool         cleanUp();
 
 
-    ModuleD3D12* getD3D12() { return d3d12; }
-    ModuleResources* getResources() { return resources; }
-	ModuleCamera* getCamera() { return camera; }
+    ModuleD3D12*        getD3D12() const { return d3d12; }
+    ModuleResources*    getResources() const { return resources; }
+	ModuleCamera*       getCamera() const { return camera; }
     
     float                       getFPS() const { return 1000.0f * float(MAX_FPS_TICKS) / tickSum; }
     float                       getAvgElapsedMs() const { return tickSum / float(MAX_FPS_TICKS); }

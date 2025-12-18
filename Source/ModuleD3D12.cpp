@@ -75,7 +75,7 @@ void ModuleD3D12::resize()
 	}
 
 }
-void ModuleD3D12::getWindowSize(unsigned& windowWidth, unsigned& windowHeight)
+void ModuleD3D12::getWindowSize(unsigned& windowWidth, unsigned& windowHeight) const
 {
 	RECT rect;
 	GetClientRect(m_hWnd, &rect);
@@ -83,7 +83,7 @@ void ModuleD3D12::getWindowSize(unsigned& windowWidth, unsigned& windowHeight)
 	windowHeight = rect.bottom - rect.top;
 }
 
-void ModuleD3D12::enableDebugLayer()
+void ModuleD3D12::enableDebugLayer() const
 {
 #if defined(_DEBUG)
 	ComPtr<ID3D12Debug> debugInterface;
@@ -236,7 +236,7 @@ bool ModuleD3D12::createFences()
 	return true;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE ModuleD3D12::getRenderTargetDescriptor()
+D3D12_CPU_DESCRIPTOR_HANDLE ModuleD3D12::getRenderTargetDescriptor() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -244,7 +244,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE ModuleD3D12::getRenderTargetDescriptor()
 		device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)
 	);
 }
-D3D12_CPU_DESCRIPTOR_HANDLE ModuleD3D12::getDepthStencilDescriptor()
+D3D12_CPU_DESCRIPTOR_HANDLE ModuleD3D12::getDepthStencilDescriptor() const
 {
 	return dsvHeap->GetCPUDescriptorHandleForHeapStart();
 }

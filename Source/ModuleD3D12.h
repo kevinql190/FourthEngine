@@ -14,8 +14,8 @@ public:
 	ID3D12Resource*					getCurrentBackBuffer() const { return renderTargets[currentIndex].Get(); }
 	ID3D12CommandAllocator*			getCommandAllocator() const { return commandAllocators[currentIndex].Get(); }
 	ID3D12CommandQueue*				getCommandQueue() const { return commandQueue.Get(); }
-	D3D12_CPU_DESCRIPTOR_HANDLE     getRenderTargetDescriptor();
-	D3D12_CPU_DESCRIPTOR_HANDLE     getDepthStencilDescriptor();
+	D3D12_CPU_DESCRIPTOR_HANDLE     getRenderTargetDescriptor() const;
+	D3D12_CPU_DESCRIPTOR_HANDLE     getDepthStencilDescriptor() const;
 
 	unsigned getWindowWidth() const { return windowWidth; }
 	unsigned getWindowHeight() const { return windowHeight; }
@@ -29,11 +29,11 @@ public:
 
 private:
 	HWND m_hWnd;
-	void getWindowSize(unsigned& windowWidth, unsigned& windowHeight);
+	void getWindowSize(unsigned& windowWidth, unsigned& windowHeight) const;
 	unsigned windowWidth = 0;
 	unsigned windowHeight = 0;
 
-	void enableDebugLayer();
+	void enableDebugLayer() const;
 	bool createDevice();
 	bool createCommandQueue();
 	bool createSwapChain();
