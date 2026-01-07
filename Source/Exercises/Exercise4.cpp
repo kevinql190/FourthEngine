@@ -151,7 +151,7 @@ void Exercise4::imGuiCommands()
 	}
 	if (ImGui::BeginMenu("Sampler"))
 	{
-		ImGui::Combo("Sampler", &sampler, "Linear/Wrap\0Point/Wrap\0Linear/Clamp\0Point/Clamp", 4);
+		ImGui::Combo("Sampler", &sampler, "Linear/Wrap\0Point/Wrap\0Linear/Clamp\0Point/Clamp\0", 4);
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("FPS"))
