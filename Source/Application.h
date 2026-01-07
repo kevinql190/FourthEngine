@@ -5,6 +5,7 @@
 #include "ModuleResources.h"
 #include "ModuleCamera.h"
 #include "ModuleSamplers.h"
+#include "ModuleShaderDescriptors.h"
 
 #include <array>
 #include <vector>
@@ -14,6 +15,7 @@ class Module;
 class ModuleD3D12;
 class ModuleResources;
 class ModuleCamera;
+class ModuleSamplers;
 
 class Application
 {
@@ -27,10 +29,11 @@ public:
 	bool         cleanUp();
 
 
-    ModuleD3D12*        getD3D12() const { return d3d12; }
-    ModuleResources*    getResources() const { return resources; }
-	ModuleCamera*       getCamera() const { return camera; }
-	ModuleSamplers*     getSamplers() const { return samplers; }
+    ModuleD3D12*                getD3D12() const { return d3d12; }
+    ModuleResources*            getResources() const { return resources; }
+	ModuleCamera*               getCamera() const { return camera; }
+	ModuleSamplers*             getSamplers() const { return samplers; }
+	ModuleShaderDescriptors*    getShaderDescriptors() const { return shaderDescriptors; }
     
     float                       getFPS() const { return 1000.0f * float(MAX_FPS_TICKS) / tickSum; }
     float                       getAvgElapsedMs() const { return tickSum / float(MAX_FPS_TICKS); }
@@ -49,6 +52,7 @@ private:
     ModuleResources* resources = nullptr;
 	ModuleCamera* camera = nullptr;
 	ModuleSamplers* samplers = nullptr;
+	ModuleShaderDescriptors* shaderDescriptors = nullptr;
 
     uint64_t  lastMilis = 0;
     TickList  tickList;

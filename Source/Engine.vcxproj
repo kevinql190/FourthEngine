@@ -178,6 +178,7 @@
     <ClInclude Include="Exercises\Exercise2.h" />
     <ClInclude Include="Exercises\Exercise3.h" />
     <ClInclude Include="Exercises\Exercise3Camera.h" />
+    <ClInclude Include="Exercises\Exercise4Plus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GamePad.h" />
     <ClInclude Include="Globals.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleSamplers.h" />
+    <ClInclude Include="ModuleShaderDescriptors.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PlatformHelpers.h" />
     <ClInclude Include="ReadData.h" />
@@ -268,6 +270,7 @@
     <ClCompile Include="Exercises\Exercise2.cpp" />
     <ClCompile Include="Exercises\Exercise3.cpp" />
     <ClCompile Include="Exercises\Exercise3Camera.cpp" />
+    <ClCompile Include="Exercises\Exercise4Plus.cpp" />
     <ClCompile Include="GamePad.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -287,6 +290,7 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleSamplers.cpp" />
+    <ClCompile Include="ModuleShaderDescriptors.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="SimpleMath.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
