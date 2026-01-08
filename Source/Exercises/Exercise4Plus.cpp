@@ -28,8 +28,10 @@ bool Exercise4Plus::init()
 		texture = resources->createTextureFromFile(std::wstring(L"Assets/dog.dds"));
 
 		// Create SRV Descriptor Heap
-		UINT index = app->getShaderDescriptors()->createSRV(texture.Get());
-		textureGPUHandle = app->getShaderDescriptors()->getGPUDescriptorHandle(index);
+		ModuleShaderDescriptors* shaderDescriptors = app->getShaderDescriptors();
+		UINT dogTable = shaderDescriptors->allocTable();
+		shaderDescriptors->createTextureSRV(dogTable, texture.Get(), 0);
+		textureGPUHandle = shaderDescriptors->getGPUDescriptorHandle(dogTable, 0);
 
 		debugDrawPass = std::make_unique<DebugDrawPass>(d3d12->getDevice(), d3d12->getCommandQueue());
 		imguiPass = std::make_unique<ImGuiPass>(app->getD3D12()->getDevice(), app->getD3D12()->getHWnd());

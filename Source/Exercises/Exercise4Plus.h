@@ -27,12 +27,13 @@ private:
 	int maxFPSHistory = 60;
 	int sampler = 0;
 
-	ComPtr<ID3D12Resource>          texture;
-	D3D12_GPU_DESCRIPTOR_HANDLE		textureGPUHandle;
 	ComPtr<ID3D12Resource>			vertexBuffer;
 	ComPtr<ID3D12RootSignature>		rootSignature;
 	ComPtr<ID3D12PipelineState>		pso;
 	D3D12_VERTEX_BUFFER_VIEW		vertexBufferView;
+
+	ComPtr<ID3D12Resource>          texture;
+	D3D12_GPU_DESCRIPTOR_HANDLE		textureGPUHandle;
 	std::unique_ptr<DebugDrawPass>  debugDrawPass;
 
 	void imGuiCommands();
