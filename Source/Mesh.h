@@ -15,11 +15,15 @@ public:
 	~Mesh();
 	void load(const tinygltf::Model& model, const tinygltf::Primitive& primitive);
 
+	int getMaterialIndex() const { return materialIndex; }
+
 private:
 	ComPtr<ID3D12Resource>			vertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW		vertexBufferView;
 	ComPtr<ID3D12Resource>			indexBuffer;
 	D3D12_INDEX_BUFFER_VIEW 		indexBufferView;
+
+	int32_t  materialIndex = -1;
 
 	bool loadAccessorData(uint8_t* data, size_t elemSize, size_t stride, size_t elemCount, const tinygltf::Model& model,
 		int accesorIndex);

@@ -50,6 +50,8 @@ void Mesh::load(const tinygltf::Model& model, const tinygltf::Primitive& primiti
         indexBufferView.Format = formats[indexElementSize >> 1];
         indexBufferView.SizeInBytes = numIndices * indexElementSize;
     }
+
+    materialIndex = primitive.material;
 }
 
 bool Mesh::loadAccessorData(uint8_t* data, size_t elemSize, size_t stride, size_t elemCount, const tinygltf::Model& model, int
