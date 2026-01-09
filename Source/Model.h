@@ -7,7 +7,11 @@ class Model
 public:
 	Model();
 	~Model();
+
 	bool loadFromFile(const char* filename, const char* basePath);
+
+	std::vector<Material*> getMaterials() const { return materials; }
+	std::vector<Mesh*> getMeshes() const { return meshes; }
 
 private:
 	std::vector<Mesh*> meshes;

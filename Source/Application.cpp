@@ -7,6 +7,7 @@
 //#include "Exercises/Exercise3Camera.h"
 //#include "Exercises/Exercise4.h"
 #include "Exercises/Exercise4Plus.h"
+#include "Exercises/Exercise5.h"
 
 
 Application::Application(int argc, wchar_t** argv, void* hWnd)
@@ -22,7 +23,8 @@ Application::Application(int argc, wchar_t** argv, void* hWnd)
     //modules.push_back(new Exercise3());
     //modules.push_back(new Exercise3Camera());
 	//modules.push_back(new Exercise4());
-	modules.push_back(new Exercise4Plus());
+	//modules.push_back(new Exercise4Plus());
+	modules.push_back(new Exercise5());
 }
 
 Application::~Application()

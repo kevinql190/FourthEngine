@@ -2,6 +2,10 @@
 #include "Mesh.h"
 
 #include "Application.h"
+#define TINYGLTF_NO_STB_IMAGE_WRITE
+#define TINYGLTF_NO_STB_IMAGE
+#define TINYGLTF_NO_EXTERNAL_IMAGE 
+#include "tiny_gltf.h"
 
 Mesh::Mesh()
 {
@@ -9,6 +13,8 @@ Mesh::Mesh()
 }
 Mesh::~Mesh()
 {
+    vertexBuffer.Reset();
+    indexBuffer.Reset();
 }
 
 void Mesh::load(const tinygltf::Model& model, const tinygltf::Primitive& primitive)
@@ -17,11 +23,13 @@ void Mesh::load(const tinygltf::Model& model, const tinygltf::Primitive& primiti
     if (itPos == primitive.attributes.end())
 		return; // If no position no geometry data
 
-    uint32_t numVertices = uint32_t(model.accessors[itPos->second].count);
+    numVertices = uint32_t(model.accessors[itPos->second].count);
     Vertex* vertices = new Vertex[numVertices];
     uint8_t* vertexData = (uint8_t*)vertices;  // Casts Vertex Buffer to Bytes (uint8_t*) buffer 
-    loadAccessorData(vertexData + offsetof(Vertex, position), sizeof(Vector3), sizeof(Vertex), numVertices, model, itPos->second);
-    loadAccessorData(vertexData + offsetof(Vertex, texCoord0), sizeof(Vector2), sizeof(Vertex), numVertices, model, primitive.attributes, "TEXCOORD_0");
+    bool ok = loadAccessorData(vertexData + offsetof(Vertex, position), sizeof(Vector3), sizeof(Vertex), numVertices, model, itPos->second);
+    ok = ok && loadAccessorData(vertexData + offsetof(Vertex, texCoord0), sizeof(Vector2), sizeof(Vertex), numVertices, model, primitive.attributes, "TEXCOORD_0");
+
+	assert(ok);
 
 	// Create Vertex Buffer
 	vertexBuffer = app->getResources()->createDefaultBuffer(vertexData, numVertices * sizeof(Vertex));
@@ -37,7 +45,7 @@ void Mesh::load(const tinygltf::Model& model, const tinygltf::Primitive& primiti
         indAcc.componentType == TINYGLTF_PARAMETER_TYPE_UNSIGNED_BYTE)
     {
         uint32_t indexElementSize = tinygltf::GetComponentSizeInBytes(indAcc.componentType);
-        uint32_t numIndices = uint32_t(indAcc.count);
+        numIndices = uint32_t(indAcc.count);
         uint8_t* indices = new uint8_t[numIndices * indexElementSize];
         loadAccessorData(indices, indexElementSize, indexElementSize, numIndices, model, primitive.indices);
 
@@ -67,9 +75,11 @@ bool Mesh::loadAccessorData(uint8_t* data, size_t elemSize, size_t stride, size_
 	const tinygltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
 	const tinygltf::Buffer& buffer = model.buffers[bufferView.buffer];
 	size_t accessorByteOffset = accessor.byteOffset + bufferView.byteOffset;
+
+	size_t strideToUse = bufferView.byteStride ? bufferView.byteStride : elemSize; // If byteStride is 0, data is tightly packed
 	for (size_t i = 0; i < elemCount; ++i)
 	{
-		size_t indexOffset = accessorByteOffset + i * bufferView.byteStride;
+		size_t indexOffset = accessorByteOffset + i * strideToUse;
 		memcpy(data + i * stride, &buffer.data[indexOffset], elemSize);
 	}
 	return true;
