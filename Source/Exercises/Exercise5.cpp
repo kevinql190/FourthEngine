@@ -237,8 +237,9 @@ void Exercise5::imGuiCommands()
 		ImGui::Text("Wheel to zoom in/out");
 		ImGui::Text("Wheel click and drag to pan camera");
 		ImGui::Text("Alt + left click and drag to orbit around target");
-		ImGui::Text("F to focus on current focus point and reset zoom");
+		ImGui::Text("UPDATE: F to focus on model and adapt zoom to model scale");
 		ImGui::Text("Shift + F to refocus to origin and reset zoom");
+		ImGui::Text("W/E/R to change guizmo mode to translate/scale/rotate");
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Sampler"))
