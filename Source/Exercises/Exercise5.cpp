@@ -199,8 +199,8 @@ void Exercise5::imGuiCommands()
 			ImGui::RadioButton("Scale", (int*)&gizmoOperation, ImGuizmo::SCALE);
 			// Change guizmo operation with keyboard shortcuts
 			if (ImGui::IsKeyPressed(ImGuiKey_W)) gizmoOperation = ImGuizmo::TRANSLATE;
-			if (ImGui::IsKeyPressed(ImGuiKey_R)) gizmoOperation = ImGuizmo::ROTATE;
-			if (ImGui::IsKeyPressed(ImGuiKey_E)) gizmoOperation = ImGuizmo::SCALE;
+			if (ImGui::IsKeyPressed(ImGuiKey_E)) gizmoOperation = ImGuizmo::ROTATE;
+			if (ImGui::IsKeyPressed(ImGuiKey_R)) gizmoOperation = ImGuizmo::SCALE;
 
 			// Manipulate model matrix with guizmo
 			ImGuizmo::Manipulate(
@@ -230,7 +230,7 @@ void Exercise5::imGuiCommands()
 		ImGui::Text("License: MIT License");
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Camera Instructions"))
+	if (ImGui::BeginMenu("How to use"))
 	{
 		ImGui::Text("Right drag to rotate camera");
 		ImGui::Text("WASDEQ with right click pressed to move camera");
@@ -239,7 +239,7 @@ void Exercise5::imGuiCommands()
 		ImGui::Text("Alt + left click and drag to orbit around target");
 		ImGui::Text("UPDATE: F to focus on model and adapt zoom to model scale");
 		ImGui::Text("Shift + F to refocus to origin and reset zoom");
-		ImGui::Text("W/E/R to change guizmo mode to translate/scale/rotate");
+		ImGui::Text("W/E/R to change guizmo mode to translate/rotate/scale");
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Sampler"))
@@ -285,8 +285,8 @@ void Exercise5::imGuiCommands()
 
 bool Exercise5::loadModel()
 {
-	//bool ok = model.loadFromFile("Assets/Models/Duck/duck.gltf", "Assets/Models/Duck/");
-	bool ok = model.loadFromFile("Assets/Models/BoxTextured/BoxTextured.gltf", "Assets/Models/BoxTextured/");
+	bool ok = model.loadFromFile("Assets/Models/Duck/duck.gltf", "Assets/Models/Duck/");
+	//bool ok = model.loadFromFile("Assets/Models/BoxTextured/BoxTextured.gltf", "Assets/Models/BoxTextured/");
 	//bool ok = model.loadFromFile("Assets/Models/BoxInterleaved/BoxInterleaved.gltf", "Assets/Models/BoxInterleaved/");
 
 	ModuleResources* resources = app->getResources();

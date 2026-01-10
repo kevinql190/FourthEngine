@@ -26,5 +26,5 @@ How to Use the Engine
    - Alt + left click and drag to orbit around target
    - UPDATE: F to focus on model and adapt zoom to model scale
    - Shift + F to refocus to origin and reset zoom
-   - W/E/R to change guizmo mode to translate/scale/rotate
+   - W/E/R to change guizmo mode to translate/rotate/scale
 3. Use the ImGui interface to load and manipulate the Texture and the scene.
