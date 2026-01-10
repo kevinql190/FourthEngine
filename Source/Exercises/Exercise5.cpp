@@ -36,6 +36,12 @@ bool Exercise5::init()
 void Exercise5::preRender()
 {
 	imguiPass->startFrame();
+	ImGuizmo::BeginFrame();
+
+	// Set ImGuizmo rect based on window size
+	unsigned width = d3d12->getWindowWidth();
+	unsigned height = d3d12->getWindowHeight();
+	ImGuizmo::SetRect(0, 0, float(width), float(height));
 }
 
 void Exercise5::render()
@@ -140,6 +146,80 @@ void Exercise5::render()
 void Exercise5::imGuiCommands()
 {
 	ImGui::ShowDemoWindow();
+
+
+	if (ImGui::Begin("Scene options"))
+	{
+		// Grid and axis toggles
+		ImGui::Checkbox("Show Grid", &showGrid);
+		ImGui::Checkbox("Show Axis", &showAxis);
+		// Model and material
+		ImGui::Separator();
+		ImGui::Text("Model has %d meshes and %d materials", (int)model.getMeshes().size(), (int)model.getMaterials().size());
+		for (const Mesh* mesh : model.getMeshes())
+		{
+			ImGui::Text("Mesh %d: %d vertices, %d indices, material %d",
+				mesh->getMaterialIndex(),
+				mesh->getVertexCount(),
+				mesh->hasIndexBuffer() ? mesh->getIndexCount() : 0,
+				mesh->getMaterialIndex());
+		}
+		ImGui::Checkbox("Show guizmo", &showGuizmo);
+
+		Matrix modelM = model.getModelMatrix();
+
+		// Manipulate model matrix by components
+		float translation[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents((float*)&modelM, translation, rotation, scale);
+		bool transform_changed = ImGui::DragFloat3("Tr##translate", translation, 0.1f);
+		transform_changed = transform_changed || ImGui::DragFloat3("Rt##rotation", rotation, 0.1f);
+		transform_changed = transform_changed || ImGui::DragFloat3("Sc##scale", scale, 0.1f);
+		if (ImGui::Button("Reset Transform"))
+		{
+			translation[0] = translation[1] = translation[2] = 0.0f;
+			rotation[0] = rotation[1] = rotation[2] = 0.0f;
+			scale[0] = scale[1] = scale[2] = 1.0f;
+			transform_changed = true;
+		}
+		if (transform_changed)
+		{
+			ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, (float*)&modelM);
+
+			model.setModelMatrix(modelM);
+		}
+
+		// Guizmo to manipulate model matrix
+		if (showGuizmo)
+		{
+			// Guizmo operation radio buttons
+			ImGui::RadioButton("Translate", (int*)&gizmoOperation, (int)ImGuizmo::TRANSLATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Rotate", (int*)&gizmoOperation, ImGuizmo::ROTATE);
+			ImGui::SameLine();
+			ImGui::RadioButton("Scale", (int*)&gizmoOperation, ImGuizmo::SCALE);
+			// Change guizmo operation with keyboard shortcuts
+			if (ImGui::IsKeyPressed(ImGuiKey_W)) gizmoOperation = ImGuizmo::TRANSLATE;
+			if (ImGui::IsKeyPressed(ImGuiKey_R)) gizmoOperation = ImGuizmo::ROTATE;
+			if (ImGui::IsKeyPressed(ImGuiKey_E)) gizmoOperation = ImGuizmo::SCALE;
+
+			// Manipulate model matrix with guizmo
+			ImGuizmo::Manipulate(
+				(const float*)&app->getCamera()->GetViewMatrix(),
+				(const float*)&app->getCamera()->GetProjectionMatrix(),
+				gizmoOperation,
+				ImGuizmo::LOCAL,
+				(float*)&modelM
+			);
+		}
+		model.setModelMatrix(modelM); // Update model matrix after Manipulate()
+
+		// Focus camera on model position when Shift+F is pressed
+		if (ImGui::IsKeyPressed(ImGuiKey_F))
+			app->getCamera()->focusOnPosition(Vector3(translation[0], translation[1], translation[2]), Vector3(scale[0], scale[1], scale[2]));
+
+		ImGui::End();
+	}
+
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("About"))
 	{
@@ -148,13 +228,6 @@ void Exercise5::imGuiCommands()
 		ImGui::Text("Name Author: Kevin Qiu");
 		ImGui::Text("Libraries: DirectX 12, ImGui...");
 		ImGui::Text("License: MIT License");
-		ImGui::EndMenu();
-	}
-	if (ImGui::BeginMenu("Settings"))
-	{
-		// Grid and axis toggles
-		ImGui::Checkbox("Show Grid", &showGrid);
-		ImGui::Checkbox("Show Axis", &showAxis);
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Camera Instructions"))

@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "DebugDrawPass.h"
 #include "ImGuiPass.h"
+#include "ImGuizmo.h"
 
 class ModuleD3D12;
 
@@ -31,11 +32,13 @@ private:
 
 	bool showGrid = true;
 	bool showAxis = true;
+	bool showGuizmo = true;
 	std::vector<float> fpsHistory;
 	int fpsOffset = 0;
 	int maxFPSHistory = 60;
 	int lastMaxFPSHistory = maxFPSHistory;
 	int sampler = 0;
+	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::TRANSLATE;
 
 	void imGuiCommands();
 	

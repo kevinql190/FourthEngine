@@ -16,7 +16,7 @@ public:
 	void setFOV(float fov);
 	void setPlaneDistances(float nearPlane, float farPlane);
 
-	void focusOnPosition(const Vector3& position);
+	void focusOnPosition(const Vector3& position, const Vector3& scale);
 
 	const Matrix& GetViewMatrix() const { return view; }
 	const Matrix& GetProjectionMatrix() const { return proj; }

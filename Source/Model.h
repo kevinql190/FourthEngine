@@ -13,7 +13,9 @@ public:
 	std::vector<Material*> getMaterials() const { return materials; }
 	std::vector<Mesh*> getMeshes() const { return meshes; }
 
-	Matrix& getModelMatrix() { return modelM; }
+	const Matrix& getModelMatrix() const { return modelM; }
+
+	void setModelMatrix(const Matrix& matrix) { modelM = matrix; }
 
 private:
 	std::vector<Mesh*> meshes;

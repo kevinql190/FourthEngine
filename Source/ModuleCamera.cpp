@@ -33,7 +33,7 @@ bool ModuleCamera::init()
 	camPitch = XMConvertToRadians(-30.0f);
 	camYaw = XMConvertToRadians(45.0f);
 	camRot = Quaternion::CreateFromAxisAngle(Vector3::Right, camPitch) * Quaternion::CreateFromAxisAngle(Vector3::Up, camYaw);
-	focusOnPosition(focusPos); // focusPoint set to origin by default
+	focusOnPosition(focusPos, Vector3::One); // focusPoint set to origin by default
 
 	d3d12 = app->getD3D12();
 
@@ -101,10 +101,9 @@ void ModuleCamera::update()
 	}
 
 	// Handle focus input
-	if (keyState.F)
+	if (keyState.F && keyState.LeftShift)
 	{
-		if (keyState.LeftShift) focusOnPosition(Vector3::Zero); // TEMPORAL: Focus on world origin
-		else focusOnPosition(focusPos);
+		focusOnPosition(Vector3::Zero, Vector3::One);
 	}
 
 	// Update camera based on input
@@ -183,9 +182,10 @@ void ModuleCamera::setPlaneDistances(float nearP, float farP)
 	farPlane = farP;
 }
 
-void ModuleCamera::focusOnPosition(const Vector3& position)
+void ModuleCamera::focusOnPosition(const Vector3& position, const Vector3& scale)
 {
 	camPos = position;
-	orbitDistance = INITIAL_ORBIT_DISTANCE;
+	float scaleFactor = std::max(scale.x, std::max(scale.y, scale.z));
+	orbitDistance = INITIAL_ORBIT_DISTANCE * scaleFactor;
 	camPos += Vector3::Transform(Vector3::Backward * orbitDistance, camRot);
 }
