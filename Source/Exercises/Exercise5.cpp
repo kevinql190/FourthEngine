@@ -74,9 +74,9 @@ void Exercise5::render()
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Get transformation matrices
-	Matrix modelM = Matrix::CreateScale(0.01f); // TODO: WIP
-	Matrix view = *app->getCamera()->GetViewMatrix();
-	Matrix proj = *app->getCamera()->GetProjectionMatrix();
+	Matrix modelM = model.getModelMatrix();
+	Matrix view = app->getCamera()->GetViewMatrix();
+	Matrix proj = app->getCamera()->GetProjectionMatrix();
 	Matrix mvp = (modelM * view * proj).Transpose(); // Transpose because HLSL expects column-major matrices by default
 	commandList->SetGraphicsRoot32BitConstants(0, sizeof(XMMATRIX) / sizeof(UINT32), &mvp, 0);
 
@@ -211,7 +211,9 @@ void Exercise5::imGuiCommands()
 
 bool Exercise5::loadModel()
 {
-	bool ok = model.loadFromFile("Assets/Models/Duck/duck.gltf", "Assets/Models/Duck/");
+	//bool ok = model.loadFromFile("Assets/Models/Duck/duck.gltf", "Assets/Models/Duck/");
+	bool ok = model.loadFromFile("Assets/Models/BoxTextured/BoxTextured.gltf", "Assets/Models/BoxTextured/");
+	//bool ok = model.loadFromFile("Assets/Models/BoxInterleaved/BoxInterleaved.gltf", "Assets/Models/BoxInterleaved/");
 
 	ModuleResources* resources = app->getResources();
 

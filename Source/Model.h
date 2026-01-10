@@ -13,8 +13,11 @@ public:
 	std::vector<Material*> getMaterials() const { return materials; }
 	std::vector<Mesh*> getMeshes() const { return meshes; }
 
+	Matrix& getModelMatrix() { return modelM; }
+
 private:
 	std::vector<Mesh*> meshes;
 	std::vector<Material*> materials;
+	Matrix modelM = Matrix::Identity;
 };
 

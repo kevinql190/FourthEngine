@@ -27,7 +27,15 @@ void Mesh::load(const tinygltf::Model& model, const tinygltf::Primitive& primiti
     Vertex* vertices = new Vertex[numVertices];
     uint8_t* vertexData = (uint8_t*)vertices;  // Casts Vertex Buffer to Bytes (uint8_t*) buffer 
     bool ok = loadAccessorData(vertexData + offsetof(Vertex, position), sizeof(Vector3), sizeof(Vertex), numVertices, model, itPos->second);
-    ok = ok && loadAccessorData(vertexData + offsetof(Vertex, texCoord0), sizeof(Vector2), sizeof(Vertex), numVertices, model, primitive.attributes, "TEXCOORD_0");
+    bool hasTexcoord = loadAccessorData(vertexData + offsetof(Vertex, texCoord0), sizeof(Vector2), sizeof(Vertex), numVertices, model, primitive.attributes, "TEXCOORD_0");
+
+    if (!hasTexcoord)
+    {
+        for (uint32_t i = 0; i < numVertices; ++i)
+        {
+            vertices[i].texCoord0 = Vector2(0.0f, 0.0f);
+        }
+    }
 
 	assert(ok);
 

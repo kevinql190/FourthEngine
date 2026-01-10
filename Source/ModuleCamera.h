@@ -18,8 +18,8 @@ public:
 
 	void focusOnPosition(const Vector3& position);
 
-	const Matrix* GetViewMatrix() const { return &view; }
-	const Matrix* GetProjectionMatrix() const { return &proj; }
+	const Matrix& GetViewMatrix() const { return view; }
+	const Matrix& GetProjectionMatrix() const { return proj; }
 
 private:
 	ModuleD3D12* d3d12 = nullptr;

@@ -68,8 +68,8 @@ void Exercise4::render()
 
 	// Get transformation matrices
 	Matrix model = Matrix::Identity;
-	Matrix view = *app->getCamera()->GetViewMatrix();
-	Matrix proj = *app->getCamera()->GetProjectionMatrix();
+	Matrix view = app->getCamera()->GetViewMatrix();
+	Matrix proj = app->getCamera()->GetProjectionMatrix();
 	Matrix mvp = (model * view * proj).Transpose(); // Transpose because HLSL expects column-major matrices by default
 
 	// Record commands

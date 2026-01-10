@@ -59,8 +59,8 @@ void Exercise3Camera::render()
 
 	// Get transformation matrices
 	Matrix model = Matrix::Identity;
-	Matrix view = *app->getCamera()->GetViewMatrix();
-	Matrix proj = *app->getCamera()->GetProjectionMatrix();	
+	Matrix view = app->getCamera()->GetViewMatrix();
+	Matrix proj = app->getCamera()->GetProjectionMatrix();	
 
 	// Record commands
 	// Clear the render target
