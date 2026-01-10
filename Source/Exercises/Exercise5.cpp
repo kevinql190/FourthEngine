@@ -27,6 +27,7 @@ bool Exercise5::init()
 
 		debugDrawPass = std::make_unique<DebugDrawPass>(d3d12->getDevice(), d3d12->getCommandQueue());
 		imguiPass = std::make_unique<ImGuiPass>(app->getD3D12()->getDevice(), app->getD3D12()->getHWnd());
+		fpsHistory.resize(maxFPSHistory, 0.0f);
 	}
 
 	return ok;
@@ -177,7 +178,6 @@ void Exercise5::imGuiCommands()
 		ImGui::SliderInt("Max FPS History", &maxFPSHistory, 10, 120);
 
 		// Handle MaxFPSHistory resize
-		static int lastMaxFPSHistory = maxFPSHistory;
 		if (lastMaxFPSHistory != maxFPSHistory)
 		{
 			fpsHistory.clear();

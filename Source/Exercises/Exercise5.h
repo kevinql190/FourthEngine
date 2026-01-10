@@ -34,6 +34,7 @@ private:
 	std::vector<float> fpsHistory;
 	int fpsOffset = 0;
 	int maxFPSHistory = 60;
+	int lastMaxFPSHistory = maxFPSHistory;
 	int sampler = 0;
 
 	void imGuiCommands();
